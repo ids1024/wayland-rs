@@ -37,3 +37,25 @@ pub mod session_lock {
         );
     }
 }
+
+#[cfg(feature = "staging")]
+pub mod image_source {
+    #[allow(missing_docs)]
+    pub mod v1 {
+        wayland_protocol!(
+            "./protocols/staging/ext-image-source/ext-image-source-v1.xml",
+            []
+        );
+    }
+}
+
+#[cfg(feature = "staging")]
+pub mod screencopy {
+    #[allow(missing_docs)]
+    pub mod v1 {
+        wayland_protocol!(
+            "./protocols/staging/ext-screencopy/ext-screencopy-v1.xml",
+            [crate::ext::image_source::v1]
+        );
+    }
+}
