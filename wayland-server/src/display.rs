@@ -1,5 +1,7 @@
 use std::{os::unix::net::UnixStream, sync::Arc};
 
+use io_lifetimes::{AsFd, BorrowedFd};
+
 use wayland_backend::{
     protocol::ObjectInfo,
     server::{Backend, ClientData, GlobalId, Handle, InitError, InvalidId, ObjectId},
@@ -63,6 +65,13 @@ impl<State: 'static> Display<State> {
     /// Access the underlying [`Backend`] of this [`Display`]
     pub fn backend(&mut self) -> &mut Backend<State> {
         &mut self.backend
+    }
+}
+
+/// Pollable fd for the display.
+impl<State: 'static> AsFd for Display<State> {
+    fn as_fd(&self) -> BorrowedFd {
+        self.backend.poll_fd()
     }
 }
 
