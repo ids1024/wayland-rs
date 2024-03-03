@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+#### Breaking changes
+- `QueueHandle::make_data` now accepts additional `DelegateTo` generic,
+  therefore allowing users to dispatch events to types different than main `State`
+
 ## 0.31.2 -- 2024-01-29
 
 #### Additions
