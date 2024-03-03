@@ -28,7 +28,8 @@
 //! library (such as Smithay) can provide generic [`Dispatch`] implementations that you can reuse on your
 //! own app by delegating those objects to that provided implementation. See the documentation of
 //! that method for details.
-//! There is also `delegated.rs` example in `wayland-rs/wayland-server`.
+//! There is also [delegated.rs](https://github.com/Smithay/wayland-rs/blob/master/wayland-server/examples/delegated.rs) example
+//! which demonstrates how delegating works.
 //!
 //! ## Globals
 //!

@@ -140,10 +140,11 @@ impl DisplayHandle {
 
     /// Create a new protocol global
     ///
+    /// Delegating variant of [`Self::create_global`]
+    ///
     /// This global will be advertized to clients through the `wl_registry` according to the rules
-    /// defined by your [`GlobalDispatch`] implementation for the given interface. Whenever a client
-    /// binds this global, the associated [`GlobalDispatch::bind()`] method will be invoked on your
-    /// `State`.
+    /// defined by [`GlobalDispatch`] implemented on `DelegateTo` type for the given interface. Whenever a client
+    /// binds this global, the associated [`GlobalDispatch::bind()`] method will be invoked on `DelegateTo` type.
     pub fn create_delegated_global<State, I, U, DelegateTo>(
         &self,
         version: u32,

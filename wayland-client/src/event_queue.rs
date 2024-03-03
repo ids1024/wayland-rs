@@ -606,6 +606,25 @@ impl<State: 'static> QueueHandle<State> {
     /// the [`Dispatch`]-based logic of `wayland-client`.
     ///
     /// Events will be dispatched via [`Dispatch`] to a `DelegateTo` generic type.
+    /// Eg.
+    /// ```ignore
+    /// struct OutputDispatcher;
+    ///
+    /// impl<D> Dispatch<WlOutput, (), D> for OutputDispatcher {
+    ///     // if `DelegateTo` of an object is set to `OutputDispatcher` events will be dispatched
+    ///     // to this impl
+    /// }
+    ///
+    /// struct SeatDispatcher;
+    ///
+    /// impl<D> Dispatch<WlSeat, (), D> for SeatDispatcher {
+    ///     // if `DelegateTo` of an object is set to `SeatDispatcher` events will be dispatched here
+    ///     // to this impl
+    /// }
+    ///
+    /// let obj1 = qh.make_data<WlOutput, (), OutputDispatcher>;
+    /// let obj2 = qh.make_data<WlSeat, (), SeatDispatcher>;
+    /// ```
     pub fn make_data<I: Proxy + 'static, U: Send + Sync + 'static, DelegateTo>(
         &self,
         user_data: U,
