@@ -174,16 +174,16 @@ impl<'a, D> DataInit<'a, D> {
     /// This is a delegating variant of [`Self::init`], which means that all requests
     /// related to this object will be dispatched via [`Dispatch`] to `DelegateTo` generic type,
     /// rather than `D`.
-    pub fn init_delegated<I: Resource + 'static, U: Send + Sync + 'static, M>(
+    pub fn init_delegated<I: Resource + 'static, U: Send + Sync + 'static, DelegateTo>(
         &mut self,
         resource: New<I>,
         data: U,
     ) -> I
     where
         D: 'static,
-        M: Dispatch<I, U, D> + 'static,
+        DelegateTo: Dispatch<I, U, D> + 'static,
     {
-        self.custom_init(resource, Arc::new(DelegatedResourceData::<I, _, M>::new(data)))
+        self.custom_init(resource, Arc::new(DelegatedResourceData::<I, _, DelegateTo>::new(data)))
     }
 
     /// Set a custom [`ObjectData`] for this object
