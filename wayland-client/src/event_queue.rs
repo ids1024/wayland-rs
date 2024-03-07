@@ -622,8 +622,8 @@ impl<State: 'static> QueueHandle<State> {
     ///     // to this impl
     /// }
     ///
-    /// let obj1 = qh.make_data<WlOutput, (), OutputDispatcher>;
-    /// let obj2 = qh.make_data<WlSeat, (), SeatDispatcher>;
+    /// let obj1 = qh.make_data::<WlOutput, (), OutputDispatcher>(());
+    /// let obj2 = qh.make_data::<WlSeat, (), SeatDispatcher>(());
     /// ```
     pub fn make_data<I: Proxy + 'static, U: Send + Sync + 'static, DelegateTo>(
         &self,
