@@ -194,6 +194,19 @@ pub mod linux_explicit_synchronization {
     }
 }
 
+#[cfg(feature = "staging")]
+pub mod linux_drm_syncobj {
+    //! Linux explicit synchronization protocol
+
+    /// Version 1
+    pub mod v1 {
+        wayland_protocol!(
+            "./protocols/staging/linux-drm-syncobj/linux-drm-syncobj-v1.xml",
+            []
+        );
+    }
+}
+
 #[cfg(feature = "unstable")]
 pub mod pointer_constraints {
     //! protocol for constraining pointer motions
