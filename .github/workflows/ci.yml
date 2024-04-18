@@ -433,7 +433,7 @@ jobs:
           force_orphan: true
 
   publish:
-    if: github.repository == 'Smithay/wayland-rs' && startsWith(github.ref, 'refs/tags/release-')
+    if: github.repository == 'ids1024/wayland-rs' && startsWith(github.ref, 'refs/tags/release-')
     needs:
       - format
       - doc
@@ -452,3 +452,4 @@ jobs:
         with:
           registry-token: ${{ secrets.CRATES_TOKEN }}
           args: --no-verify
+          dry-run: true
