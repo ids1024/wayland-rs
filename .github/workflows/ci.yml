@@ -446,7 +446,7 @@ jobs:
           toolchain: stable
           override: true
       - name: Publish crates
-        uses: katyo/publish-crates@v1
+        uses: katyo/publish-crates@v2
         with:
           registry-token: ${{ secrets.CRATES_TOKEN }}
           args: --no-verify
