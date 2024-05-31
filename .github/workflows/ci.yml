@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - master
+    - test
     tags:
       - 'release-[0-9]+-[0-9]+-[0-9]+'
   pull_request:
@@ -447,6 +448,7 @@ jobs:
         with:
           toolchain: stable
           override: true
+      - run: ls wayland-protocols/protocols
       - name: Publish crates
         uses: katyo/publish-crates@v2
         with:
