@@ -52,6 +52,8 @@ env_logger = "0.10"
 client_system = ["wayland-sys/client"]
 server_system = ["wayland-sys/server"]
 dlopen = ["wayland-sys/dlopen"]
+raw-window-handle = ["dep:raw-window-handle", "client_system"]
+rwh_06 = ["dep:rwh_06", "client_system"]
 
 [package.metadata.docs.rs]
 all-features = true

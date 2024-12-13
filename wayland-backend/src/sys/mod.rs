@@ -129,7 +129,7 @@ unsafe impl raw_window_handle::HasRawDisplayHandle for client::Backend {
     }
 }
 
-#[cfg(all(feature = "rwh_06", feature = "client_system"))]
+#[cfg(feature = "rwh_06")]
 impl rwh_06::HasDisplayHandle for client::Backend {
     fn display_handle(&self) -> Result<rwh_06::DisplayHandle<'_>, rwh_06::HandleError> {
         use std::ptr::NonNull;
