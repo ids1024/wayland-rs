@@ -415,3 +415,23 @@ impl<I: Proxy> PartialEq<I> for Weak<I> {
         self.id == other.id()
     }
 }
+
+#[cfg(feature = "rwh_06")]
+impl rwh_06::HasDisplayHandle for Connection {
+    fn display_handle(&self) -> Result<rwh_06::DisplayHandle<'_>, rwh_06::HandleError> {
+        self.backend.display_handle()
+    }
+}
+
+#[cfg(feature = "rwh_06")]
+impl rwh_06::HasWindowHandle for protocol::wl_surface::WlSurface {
+    fn window_handle(&self) -> std::result::Result<rwh_06::WindowHandle<'_>, rwh_06::HandleError> {
+        Ok(unsafe {
+            rwh_06::WindowHandle::borrow_raw(rwh_06::RawWindowHandle::Wayland(
+                rwh_06::WaylandWindowHandle::new(
+                    std::ptr::NonNull::new(self.id().as_ptr() as *mut _).unwrap(),
+                ),
+            ))
+        })
+    }
+}
