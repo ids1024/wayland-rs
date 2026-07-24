@@ -2132,7 +2132,6 @@
         use the seat object anymore.
       </description>
     </request>
-
   </interface>
 
   <interface name="wl_pointer" version="11">
@@ -2594,6 +2593,8 @@
       <entry name="no_keymap" value="0"
              summary="no keymap; client must understand how to interpret the raw keycode"/>
       <entry name="xkb_v1" value="1"
+	     summary="libxkbcommon and X11 compatible, null-terminated string; to determine the xkb keycode, clients must add 8 to the key event keycode"/>
+      <entry name="xkb_v2" value="2" since="11"
              summary="libxkbcommon compatible, null-terminated string; to determine the xkb keycode, clients must add 8 to the key event keycode"/>
     </enum>
 
@@ -2605,6 +2606,13 @@
 
         From version 7 onwards, the fd must be mapped with MAP_PRIVATE by
         the recipient, as MAP_SHARED may fail.
+
+        From version 11 onwards, multiple wl_keyboard.keymap events may be sent
+        within a single frame, each representing the same keymap in a distinct
+        keymap format. Clients must select and process at most one of these
+        keymaps, ideally the one offering the greatest feature coverage, while
+        immediately closing the file descriptors corresponding to unused
+        keymaps. Keymap events sent in a later frame replace the active keymap.
       </description>
       <arg name="format" type="uint" enum="keymap_format" summary="keymap format"/>
       <arg name="fd" type="fd" summary="keymap file descriptor"/>
@@ -2626,6 +2634,9 @@
 
         Clients should not use the list of pressed keys to emulate key-press
         events. The order of keys in the list is unspecified.
+
+        From version 11 onwards this event is part of a wl_keyboard.frame
+        logical event group. See wl_keyboard.frame for details.
       </description>
       <arg name="serial" type="uint" summary="serial number of the enter event"/>
       <arg name="surface" type="object" interface="wl_surface" summary="surface gaining keyboard focus"/>
@@ -2644,6 +2655,9 @@
         defaults. The compositor must not send this event if the active surface
         of the wl_keyboard was not equal to the surface argument immediately
         before this event.
+
+        From version 11 onwards this event is part of a wl_keyboard.frame
+        logical event group. See wl_keyboard.frame for details.
       </description>
       <arg name="serial" type="uint" summary="serial number of the leave event"/>
       <arg name="surface" type="object" interface="wl_surface" summary="surface that lost keyboard focus"/>
@@ -2691,6 +2705,9 @@
         key state when a wl_keyboard.repeat_info event with a rate argument of
         0 has been received. This allows the compositor to take over the
         responsibility of key repetition.
+
+        From version 11 onwards this event is part of a wl_keyboard.frame
+        logical event group. See wl_keyboard.frame for details.
       </description>
       <arg name="serial" type="uint" summary="serial number of the key event"/>
       <arg name="time" type="uint" summary="timestamp with millisecond granularity"/>
@@ -2713,6 +2730,9 @@
 
         In the wl_keyboard logical state, this event updates the modifiers and
         group.
+
+        From version 11 onwards this event is part of a wl_keyboard.frame
+        logical event group. See wl_keyboard.frame for details.
       </description>
       <arg name="serial" type="uint" summary="serial number of the modifiers event"/>
       <arg name="mods_depressed" type="uint" summary="depressed modifiers"/>
@@ -2743,11 +2763,46 @@
         This event can be sent later on as well with a new value if necessary,
         so clients should continue listening for the event past the creation
         of wl_keyboard.
+
+        From version 11 onwards this event is part of a wl_keyboard.frame
+        logical event group. See wl_keyboard.frame for details.
       </description>
       <arg name="rate" type="int"
            summary="the rate of repeating keys in characters per second"/>
       <arg name="delay" type="int"
            summary="delay in milliseconds since key down until repeating starts"/>
+    </event>
+
+    <!-- Version 11 additions -->
+
+    <event name="frame" since="11">
+      <description summary="end of keyboard event sequence">
+	Indicates the end of a set of events that logically belong together.
+	A client is expected to accumulate the data in all events within the
+	frame before proceeding.
+
+	All wl_keyboard events before a wl_keyboard.frame event belong
+	logically together. For example, multiple wl_keyboard.keymap event may
+	be sent — each one with a different format — and finally a
+	wl_keyboard.frame event. See the wl_keyboard.keymap event for more
+	details.
+
+	A wl_keyboard.frame event is sent for every logical event group,
+	even if the group only contains a single wl_keyboard event.
+	Specifically, a client may get a sequence: key, frame, key, modifier,
+	frame, key, frame.
+
+	The wl_keyboard.enter and wl_keyboard.leave events are logical events
+	generated by the compositor and not the hardware. These events are
+	also grouped by a wl_keyboard.frame. When the keyboard focus moves from
+	one surface to another, a compositor should group the
+	wl_keyboard.leave event within the same wl_keyboard.frame.
+	However, a client must not rely on wl_keyboard.leave and
+	wl_keyboard.enter being in the same wl_keyboard.frame.
+	Compositor-specific policies may require the wl_keyboard.leave and
+	wl_keyboard.enter event being split across multiple wl_keyboard.frame
+	groups.
+      </description>
     </event>
   </interface>
 
